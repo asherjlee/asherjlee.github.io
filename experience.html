@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Experience — Asher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f5f2;
+      --ink: #1a1814;
+      --ink-soft: #5a5650;
+      --accent: #c8a96e;
+      --accent-light: #f0e8d8;
+      --border: #e2ddd6;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(247,245,242,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 1.35rem;
+      color: var(--ink); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--ink-soft); transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a.active { color: var(--ink); border-bottom: 1.5px solid var(--accent); padding-bottom: 2px; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 10rem 3rem 4rem;
+      max-width: 1100px; margin: 0 auto;
+      animation: fadeUp 0.8s ease both;
+    }
+    .page-eyebrow {
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 1rem;
+    }
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1.05; margin-bottom: 1.2rem;
+    }
+    .page-subtitle {
+      font-size: 1.05rem; color: var(--ink-soft); max-width: 50ch;
+    }
+
+    /* ── TABS ── */
+    .tab-bar {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 3rem 3rem;
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .tab {
+      padding: 0.5rem 1.25rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: white;
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; cursor: pointer;
+      color: var(--ink-soft);
+      transition: all 0.2s;
+    }
+    .tab:hover, .tab.active {
+      background: var(--ink); color: var(--bg); border-color: var(--ink);
+    }
+
+    /* ── TIMELINE ── */
+    .timeline-section {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 3rem 6rem;
+    }
+    .timeline-section.hidden { display: none; }
+
+    .section-label {
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 2.5rem;
+    }
+
+    .timeline { position: relative; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .entry {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 2.5rem;
+      padding: 2.5rem 0 2.5rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .entry.visible { opacity: 1; transform: none; }
+    .entry::before {
+      content: '';
+      position: absolute;
+      left: -4px; top: 2.8rem;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+    .entry:last-child { border-bottom: none; }
+
+    .entry-meta {}
+    .entry-date {
+      font-size: 0.8rem; letter-spacing: 0.08em;
+      color: var(--ink-soft); text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .entry-org {
+      font-weight: 500; font-size: 0.88rem; color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+    .entry-tag {
+      display: inline-block;
+      font-size: 0.72rem; font-weight: 500;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      background: var(--accent-light); color: #7a6843;
+    }
+
+    .entry-body {}
+    .entry-role {
+      font-family: var(--serif);
+      font-size: 1.45rem; line-height: 1.2;
+      margin-bottom: 0.8rem;
+    }
+    .entry-desc {
+      font-size: 0.95rem; color: var(--ink-soft); line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .entry-bullets {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 0.45rem;
+    }
+    .entry-bullets li {
+      font-size: 0.9rem; color: var(--ink-soft);
+      padding-left: 1.2rem; position: relative;
+    }
+    .entry-bullets li::before {
+      content: '—';
+      position: absolute; left: 0;
+      color: var(--accent);
+    }
+
+    /* ── EDUCATION CARDS ── */
+    .edu-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem; margin-top: 0;
+    }
+    .edu-card {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 4px; background: white;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.2s;
+    }
+    .edu-card.visible { opacity: 1; transform: none; }
+    .edu-card:hover { border-color: var(--accent); }
+    .edu-card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 1rem;
+    }
+    .edu-badge {
+      font-size: 2rem;
+    }
+    .edu-years {
+      font-size: 0.78rem; color: var(--ink-soft);
+      letter-spacing: 0.06em;
+    }
+    .edu-school {
+      font-weight: 500; font-size: 1rem; margin-bottom: 0.3rem;
+    }
+    .edu-degree {
+      font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 0.75rem;
+    }
+    .edu-detail {
+      font-size: 0.82rem; color: var(--accent); font-weight: 500;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.82rem; color: var(--ink-soft);
+    }
+    .footer-logo { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .page-header { padding: 8rem 1.5rem 3rem; }
+      .tab-bar { padding: 0 1.5rem 2rem; }
+      .timeline-section { padding: 0 1.5rem 4rem; }
+      .entry { grid-template-columns: 1fr; gap: 0.75rem; padding-left: 2rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">A.</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="experience.html" class="active">Experience</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="page-eyebrow">Background</p>
+    <h1 class="page-title">Experience &<br><em style="font-style:italic;">Education.</em></h1>
+    <p class="page-subtitle">A record of work across finance, tech, content creation, and leadership.</p>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab active" onclick="showTab('work')">Work & Internships</button>
+    <button class="tab" onclick="showTab('leadership')">Leadership & Clubs</button>
+    <button class="tab" onclick="showTab('other')">Military & Athletics</button>
+    <button class="tab" onclick="showTab('education')">Education</button>
+  </div>
+
+  <!-- WORK -->
+  <div class="timeline-section" id="tab-work">
+    <div class="timeline">
+
+      <div class="entry">
+        <div class="entry-meta">
+          <div class="entry-date">2024 – 2025</div>
+          <div class="entry-org">HP Tech Ventures</div>
+          <span class="entry-tag">Externship</span>
+        </div>
+        <div class="entry-body">
+          <div class="entry-role">Deal Sourcing & Startup Analyst</div>
+          <ul class="entry-bullets">
+            <li>Conducted deal sourcing and evaluated early-stage startups across the tech landscape</li>
+            <li>Prepared investment memos and startup assessment reports for fund consideration</li>
+            <li>Gained hands-on exposure to VC deal flow, portfolio analysis, and LP/GP mechanics</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-meta">
+          <div class="entry-date">2024</div>
+          <div class="entry-org">Schreiber Foods</div>
+          <span class="entry-tag">Externship</span>
+        </div>
+        <div class="entry-body">
+          <div class="entry-role">Sustainability Strategy Extern</div>
+          <ul class="entry-bullets">
+            <li>Developed sustainability strategy recommendations for a global food company</li>
+            <li>Analyzed ESG frameworks and benchmarked against industry peers</li>
+            <li>Presented findings to company stakeholders</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-meta">
+          <div class="entry-date">2023 – Present</div>
+          <div class="entry-org">Supercell / YouTube</div>
+          <span class="entry-tag">Creator</span>
+        </div>
+        <div class="entry-body">
+          <div class="entry-role">Super Content Creator — Clash Royale</div>
+          <ul class="entry-bullets">
+            <li>Grew channel to 30K+ subscribers; awarded official Supercell "Super Content Creator" partnership</li>
+            <li>Produced consistent mobile gaming content with brand deal coordination and community management</li>
+            <li>Managed channel strategy, video production, and audience growth independently</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEADERSHIP -->
+  <div class="timeline-section hidden" id="tab-leadership">
+    <div class="timeline">
+
+      <div class="entry">
+        <div class="entry-meta">
+          <div class="entry-date">2024 – Present</div>
+          <div class="entry-org">Korean Business Honors Society</div>
+          <span class="entry-tag">NYU Stern</span>
+        </div>
+        <div class="entry-body">
+          <div class="entry-role">Member — KOBHS</div>
+          <ul class="entry-bullets">
+            <li>Member of NYU's Korean business community connecting students with Korean industry professionals</li>
+            <li>Participated in networking events and case competitions</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-meta">
+          <div class="entry-date">2026 – Present</div>
+          <div class="entry-org">Bridges for Enterprise</div>
+          <span class="entry-tag">Consulting</span>
+        </div>
+        <div class="entry-body">
+          <div class="entry-role">Strategy Consulting Associate</div>
+          <ul class="entry-bullets">
+            <li>Prepared a full consulting case deck on Africa Cooking Solutions for the BfE application process</li>
+            <li>Developed verbal scripts and structured frameworks for case interview rounds</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MILITARY & ATHLETICS -->
+  <div class="timeline-section hidden" id="tab-other">
+    <div class="timeline">
+
+      <div class="entry">
+        <div class="entry-meta">
+          <div class="entry-date">~2021 – 2023</div>
+          <div class="entry-org">Republic of Korea</div>
+          <span class="entry-tag">Military Service</span>
+        </div>
+        <div class="entry-body">
+          <div class="entry-role">Social Service Agent — Squad Leader</div>
+          <ul class="entry-bullets">
+            <li>Completed ~21 months of mandatory military service as a Social Service Agent Squad Leader</li>
+            <li>Led and managed a squad, developing operational leadership and team coordination skills</li>
+            <li>Concurrently built and grew YouTube channel to 30K+ subscribers during service period</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-meta">
+          <div class="entry-date">2019 – 2021</div>
+          <div class="entry-org">Fencing — South Korea</div>
+          <span class="entry-tag">National Level</span>
+        </div>
+        <div class="entry-body">
+          <div class="entry-role">Competitive Fencer — National Representative</div>
+          <ul class="entry-bullets">
+            <li>Represented South Korea as a competitive fencer at the national level</li>
+            <li>🥈 Silver medalist, 2019 Hong Kong International Regional Circuit</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="timeline-section hidden" id="tab-education">
+    <div class="edu-grid">
+
+      <div class="edu-card">
+        <div class="edu-card-top">
+          <div class="edu-badge">🟣</div>
+          <div class="edu-years">2022 – 2028 (Excpected)</div>
+        </div>
+        <div class="edu-school">New York University Stern School of Business</div>
+        <div class="edu-degree">B.S. Finance & B.A. Computer Science</div>
+        <div class="edu-detail">Double Major · 4.0 GPA</div>
+      </div>
+    
+      <div class="edu-card">
+        <div class="edu-card-top">
+          <div class="edu-badge">💻</div>
+          <div class="edu-years">2023 – 2027</div>
+        </div>
+        <div class="edu-school">NYU — Minor</div>
+        <div class="edu-degree">Web Programming & Applications</div>
+        <div class="edu-detail">Flask · JavaScript · Linux · React</div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-logo">A.</span>
+    <span>© 2026 Asher. All rights reserved.</span>
+    <span>NYU CAS & Stern</span>
+  </footer>
+
+  <script>
+    function showTab(name) {
+      document.querySelectorAll('.timeline-section').forEach(s => s.classList.add('hidden'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.remove('hidden');
+      event.target.classList.add('active');
+      observeEntries();
+    }
+
+    function observeEntries() {
+      const items = document.querySelectorAll('.entry:not(.visible), .edu-card:not(.visible)');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) {
+            setTimeout(() => e.target.classList.add('visible'), i * 100);
+          }
+        });
+      }, { threshold: 0.08 });
+      items.forEach(el => obs.observe(el));
+    }
+
+    observeEntries();
+  </script>
+</body>
+</html>
