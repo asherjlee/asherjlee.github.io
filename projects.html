@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projects — Asher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #e8f4f8;
+      --ink: #1a2a33;
+      --ink-soft: #4a6070;
+      --accent: #4a90a4;
+      --accent-light: #d0eaf2;
+      --border: #c5dde6;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(232,244,248,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 1.35rem;
+      color: var(--ink); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--ink-soft); transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a.active { color: var(--ink); border-bottom: 1.5px solid var(--accent); padding-bottom: 2px; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 10rem 3rem 4rem;
+      max-width: 1100px; margin: 0 auto;
+      animation: fadeUp 0.8s ease both;
+    }
+    .page-eyebrow {
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 1rem;
+    }
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1.05; margin-bottom: 1.2rem;
+    }
+    .page-subtitle {
+      font-size: 1.05rem; color: var(--ink-soft); max-width: 50ch;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 3rem 3rem;
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 0.5rem 1.25rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: white;
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; cursor: pointer;
+      color: var(--ink-soft);
+      transition: all 0.2s;
+      font-family: var(--sans);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--ink); color: var(--bg); border-color: var(--ink);
+    }
+
+    /* ── PROJECTS GRID ── */
+    .projects-section {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 3rem 6rem;
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.75rem;
+    }
+
+    /* ── PROJECT CARD ── */
+    .project-card {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: white;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.6s ease, transform 0.6s ease,
+                  border-color 0.2s, box-shadow 0.2s;
+    }
+    .project-card.visible { opacity: 1; transform: none; }
+    .project-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 6px 30px rgba(74,144,164,0.12);
+    }
+    .project-card.hidden-card { display: none; }
+    .project-card.featured {
+      grid-column: 1 / -1;
+      flex-direction: row;
+    }
+
+    .card-visual {
+      background: var(--accent-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      min-height: 160px;
+      flex-shrink: 0;
+    }
+    .project-card.featured .card-visual {
+      width: 260px; min-height: unset; font-size: 4rem;
+    }
+
+    .card-body {
+      padding: 1.75rem;
+      display: flex; flex-direction: column; flex: 1;
+    }
+    .card-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.9rem; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .card-track {
+      font-size: 0.72rem; font-weight: 500;
+      padding: 0.2rem 0.75rem; border-radius: 999px;
+      background: var(--accent-light); color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+    .card-status {
+      font-size: 0.72rem; font-weight: 500;
+      padding: 0.2rem 0.75rem; border-radius: 999px;
+      letter-spacing: 0.04em;
+    }
+    .status-building { background: #fff3e0; color: #e65100; }
+    .status-active   { background: #e8f5e9; color: #2e7d32; }
+    .status-planned  { background: #f3f4f6; color: #6b7280; }
+
+    .card-title {
+      font-family: var(--serif);
+      font-size: 1.45rem; line-height: 1.2;
+      margin-bottom: 0.6rem;
+    }
+    .card-desc {
+      font-size: 0.93rem; color: var(--ink-soft); line-height: 1.8;
+      margin-bottom: 1.25rem; flex: 1;
+    }
+    .card-highlights {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 0.4rem;
+      margin-bottom: 1.4rem;
+    }
+    .card-highlights li {
+      font-size: 0.88rem; color: var(--ink-soft);
+      padding-left: 1.2rem; position: relative;
+    }
+    .card-highlights li::before {
+      content: '—'; position: absolute; left: 0; color: var(--accent);
+    }
+    .card-stack {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .stack-tag {
+      font-size: 0.73rem; font-weight: 500;
+      padding: 0.2rem 0.65rem; border-radius: 3px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--ink-soft); letter-spacing: 0.03em;
+    }
+    .card-footer {
+      display: flex; gap: 0.75rem; flex-wrap: wrap;
+      padding-top: 1.25rem; border-top: 1px solid var(--border);
+    }
+    .card-link {
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--ink-soft);
+      display: flex; align-items: center; gap: 0.35rem;
+      transition: color 0.2s;
+    }
+    .card-link:hover { color: var(--accent); }
+    .card-link-primary {
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink); padding-bottom: 1px;
+    }
+    .card-link-primary:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.82rem; color: var(--ink-soft);
+    }
+    .footer-logo { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .page-header { padding: 8rem 1.5rem 3rem; }
+      .filter-bar { padding: 0 1.5rem 2rem; }
+      .projects-section { padding: 0 1.5rem 4rem; }
+      .project-card.featured { flex-direction: column; grid-column: auto; }
+      .project-card.featured .card-visual { width: 100%; min-height: 140px; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">A.</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="page-eyebrow">Work</p>
+    <h1 class="page-title">Projects &<br><em style="font-style:italic;">Builds.</em></h1>
+    <p class="page-subtitle">Things I've built at the intersection of finance, AI, and full-stack development.</p>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterCards('all', this)">All</button>
+    <button class="filter-btn" onclick="filterCards('ai', this)">AI / LLM</button>
+    <button class="filter-btn" onclick="filterCards('finance', this)">Finance & Quant</button>
+    <button class="filter-btn" onclick="filterCards('web', this)">Web Dev</button>
+  </div>
+
+  <div class="projects-section">
+    <div class="projects-grid" id="projects-grid">
+
+      <!-- SENSEI — featured -->
+      <div class="project-card featured" data-tags="ai web">
+        <div class="card-visual">🎓</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-track">AI · Recruiting</span>
+            <span class="card-status status-building">Building · Summer 2026</span>
+          </div>
+          <div class="card-title">Sensei</div>
+          <p class="card-desc">
+            A personalized AI recruiting consultant for business students — part STAR-story coach, part mock interviewer, part live recruiting calendar. Think Duolingo meets Wall Street Prep, built for Stern students first.
+          </p>
+          <ul class="card-highlights">
+            <li>Onboarding collects background, stories, and target track (IB · S&T · Consulting · PM)</li>
+            <li>AI behavioral story builder with STAR format coaching and follow-up push-back</li>
+            <li>Live per-firm recruiting calendar with deadlines, app opens, and superday countdowns</li>
+            <li>XP, streaks, and locked module progression (Duolingo-style engagement)</li>
+            <li>Voice mock interviews; App Store release via Capacitor wrapper</li>
+          </ul>
+          <div class="card-stack">
+            <span class="stack-tag">React Native</span>
+            <span class="stack-tag">Capacitor</span>
+            <span class="stack-tag">Claude API</span>
+            <span class="stack-tag">Supabase</span>
+            <span class="stack-tag">TypeScript</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-link" style="opacity:0.5;cursor:default;">In Development</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATOR ENGINE -->
+      <div class="project-card" data-tags="ai web">
+        <div class="card-visual">📈</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-track">AI · Creator Tools</span>
+            <span class="card-status status-building">Building · Summer 2026</span>
+          </div>
+          <div class="card-title">Creator Engine</div>
+          <p class="card-desc">
+            An AI-powered YouTube channel growth consultant. Connects via the YouTube Data API, analyzes performance, and surfaces actionable insight modules across growth, retention, and content strategy.
+          </p>
+          <ul class="card-highlights">
+            <li>YouTube Data API v3 integration — channel sync and full performance ingestion</li>
+            <li>AI insight engine: growth, retention, and content-strategy modules</li>
+            <li>Supabase backend with RLS; deployed on Vercel</li>
+          </ul>
+          <div class="card-stack">
+            <span class="stack-tag">Next.js</span>
+            <span class="stack-tag">TypeScript</span>
+            <span class="stack-tag">Supabase</span>
+            <span class="stack-tag">YouTube API</span>
+            <span class="stack-tag">Claude API</span>
+            <span class="stack-tag">Vercel</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-link" style="opacity:0.5;cursor:default;">In Development</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUANT PROJECT -->
+      <div class="project-card" data-tags="finance">
+        <div class="card-visual">📊</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-track">Quant · Finance</span>
+            <span class="card-status status-planned">Planned · Aug 2026</span>
+          </div>
+          <div class="card-title">Quant Project</div>
+          <p class="card-desc">
+            A collaborative quantitative finance project — direction to be set after a mid-June alignment meeting. Likely sits at the intersection of Python data science and financial markets.
+          </p>
+          <ul class="card-highlights">
+            <li>Collaborative build with a peer; scope confirmed mid-June</li>
+            <li>Python data science stack with financial data sources</li>
+          </ul>
+          <div class="card-stack">
+            <span class="stack-tag">Python</span>
+            <span class="stack-tag">pandas</span>
+            <span class="stack-tag">statsmodels</span>
+            <span class="stack-tag">yfinance</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-link" style="opacity:0.5;cursor:default;">Coming August 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PORTFOLIO WEBSITE -->
+      <div class="project-card" data-tags="web">
+        <div class="card-visual">🌐</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-track">Web · Design</span>
+            <span class="card-status status-active">Live</span>
+          </div>
+          <div class="card-title">Portfolio Website</div>
+          <p class="card-desc">
+            This site — a multi-page personal portfolio built from scratch for finance and tech recruiting. Tabbed experience timeline, scroll-reveal animations, and a clean typographic system.
+          </p>
+          <ul class="card-highlights">
+            <li>Vanilla HTML/CSS/JS — no frameworks, fully hand-crafted</li>
+            <li>Tabbed experience page: Work, Leadership, Military & Athletics, Education</li>
+            <li>DM Serif Display + DM Sans type pairing with CSS custom properties</li>
+          </ul>
+          <div class="card-stack">
+            <span class="stack-tag">HTML</span>
+            <span class="stack-tag">CSS</span>
+            <span class="stack-tag">JavaScript</span>
+          </div>
+          <div class="card-footer">
+            <a href="index.html" class="card-link card-link-primary">View Site ↗</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-logo">A.</span>
+    <span>© 2026 Asher. All rights reserved.</span>
+    <span>NYU CAS & Stern</span>
+  </footer>
+
+  <script>
+    function observeCards() {
+      const cards = document.querySelectorAll('.project-card:not(.visible):not(.hidden-card)');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100);
+        });
+      }, { threshold: 0.06 });
+      cards.forEach(el => obs.observe(el));
+    }
+    observeCards();
+
+    function filterCards(tag, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.project-card').forEach(card => {
+        const tags = card.dataset.tags || '';
+        const show = tag === 'all' || tags.split(' ').includes(tag);
+        card.classList.toggle('hidden-card', !show);
+        if (show) {
+          card.classList.remove('visible');
+          setTimeout(() => card.classList.add('visible'), 80);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
