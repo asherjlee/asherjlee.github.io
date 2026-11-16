@@ -926,6 +926,89 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.01ms !important
 }
 @media (max-width:860px) and (min-height:740px){.sub-short{display:block}}
 
+/* =====================================================================
+   SCROLLING LAYOUT: the same game-style pieces, stacked as a normal page.
+   The top bar sticks, the tab bar stays at the bottom, the arena fills the first screen.
+   ===================================================================== */
+html.js,html.js body{height:auto;overflow:visible;overscroll-behavior:auto}
+html{scroll-padding-top:calc(var(--hud-h,64px) + 8px)}
+html:not(.rm){scroll-behavior:smooth}
+html.in-battle,html.in-battle body,.show-gate,.show-gate body{overflow:hidden}
+html.js .app{position:static;height:auto;display:block}
+.hud{position:sticky;top:0}
+.stage{overflow:visible;touch-action:auto;flex:none}
+html.js .track{display:block;transform:none !important;transition:none;will-change:auto}
+html.js .screen,html:not(.js) .screen{position:relative;height:auto;overflow:visible;flex:none;padding:var(--s7) 0}
+.screen + .screen{border-top:2px solid rgba(143,182,255,.14)}
+html.js #home,html:not(.js) #home{height:calc(100vh - var(--hud-h,64px) - var(--tab-h,72px));height:calc(100svh - var(--hud-h,64px) - var(--tab-h,72px));min-height:540px;padding:0;overflow:hidden;border-top:0}
+#home .scr{height:100%}
+.scr{height:auto}
+.scr-head{margin-bottom:var(--s5)}
+.scr-head h2{font-size:clamp(36px,5vw,56px)}
+.scr-body{flex:none}
+.pane{height:auto}
+.scroll-y{overflow:visible;touch-action:auto}
+#contact .scr{justify-content:flex-start}
+.tabbar{position:fixed;left:0;right:0;bottom:0}
+body{padding-bottom:var(--tab-h,72px)}
+.pane-title{--sw:5px;display:flex;align-items:center;gap:var(--s3);font-size:clamp(24px,3vw,30px);line-height:1.1;margin:var(--s7) 0 var(--s4)}
+.pane-title .ribbon{font-size:15px;padding:2px var(--s5) 6px}
+html.rm{scroll-behavior:auto}
+/* sections make their entrance the first time they scroll into view */
+html.js:not(.rm) .screen:not(.first):not(#home) :is(.scr-head,.deck > .ccard,.chests > .slot,.stat-grid > *,.about,.clan,.arsenal > .skill,.pane-title){opacity:0}
+html.js:not(.rm) .screen.first .arsenal > .skill,html.js:not(.rm) .screen.first .pane-title{animation:fadeUp .5s var(--ease-out) both;animation-delay:calc(.15s + var(--i,0) * 45ms)}
+@media (max-width:860px){
+  html.js .screen,html:not(.js) .screen{padding:var(--s6) 0}
+  html.js #home{min-height:500px}
+  .scr-head .ribbon{display:inline-block;font-size:14px;padding:2px var(--s5) 6px}
+  .scr-head h2{font-size:34px}
+  .pane-title{margin:var(--s6) 0 var(--s3)}
+}
+
+/* ---------- Trophy road: vertical, the gold line fills as you scroll ---------- */
+.road{position:relative;max-width:940px;margin:0 auto;padding:var(--s2) 0}
+.road-list{list-style:none;position:relative}
+.road-track,.road-fill{position:absolute;left:50%;top:0;width:14px;margin-left:-7px;border-radius:999px}
+.road-track{bottom:0;background:#0a1536;border:3px solid var(--ink)}
+.road-fill{bottom:0;transform-origin:top;transform:scaleY(0);background:linear-gradient(180deg,#ffe46b,#ffb21c);border:3px solid var(--ink)}
+.node{position:relative;display:grid;grid-template-columns:1fr 80px 1fr;align-items:center;margin:var(--s5) 0}
+.node .tbadge{grid-column:2;justify-self:center;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;
+  background:#14295c;border:4px solid var(--ink);color:#8a9ac6;transition:background .3s,color .3s;z-index:1}
+.node .tbadge svg{width:28px;height:28px}
+.node.reached .tbadge{background:linear-gradient(180deg,#ffe46b,#ffb21c);color:var(--ink)}
+.node .rcard{padding:var(--s4) var(--s5)}
+.node:nth-child(odd) .rcard{grid-column:1;grid-row:1;text-align:right}
+.node:nth-child(even) .rcard{grid-column:3;grid-row:1}
+.rcard .yr{display:block;font-weight:900;font-size:14px;color:var(--gold);letter-spacing:.06em;text-transform:uppercase}
+.rcard h3{--sw:4px;font-size:22px;line-height:1.15;margin:2px 0 var(--s1)}
+.rcard p{font-size:15px;color:var(--soft);margin-left:auto}
+.node:nth-child(even) .rcard p{margin-left:0}
+.node.locked .rcard{border-style:dashed;background:linear-gradient(180deg,#1b2f66,#101f48)}
+
+
+#pRoad{display:block}
+.road-title{justify-content:center;flex-direction:column;text-align:center}
+.road .node.next .tbadge{background:linear-gradient(180deg,#ff8a8f,#e2353f);color:#fff}
+.road .node.locked .tbadge{background:#14295c;color:#8a9ac6}
+/* each milestone slides in from its side of the road the first time it's on screen */
+html.js:not(.rm) .road .rcard{opacity:0;transition:opacity .5s var(--ease-out), transform .6s var(--ease-out)}
+html.js:not(.rm) .road .node:nth-child(odd) .rcard{transform:translateX(-36px)}
+html.js:not(.rm) .road .node:nth-child(even) .rcard{transform:translateX(36px)}
+html.js:not(.rm) .road .node.seen .rcard{opacity:1;transform:none}
+html:not(.rm) .road .tbadge{transition:background-color .3s, color .3s, transform .35s var(--ease-out)}
+@media (max-width:860px){
+  .road-track,.road-fill{left:30px}
+  .road .node{grid-template-columns:60px 1fr;gap:var(--s4)}
+  .road .node .tbadge{grid-column:1}
+  .road .node:nth-child(odd) .rcard,.road .node:nth-child(even) .rcard{grid-column:2;text-align:left}
+  .road .node .rcard p{margin-left:0}
+  .road .node .rcard{padding:var(--s3) var(--s4)}
+  .road .rcard h3{font-size:19px}
+  .road .rcard p{font-size:14px}
+  html.js:not(.rm) .road .node:nth-child(n) .rcard{transform:translateX(28px)}
+  html.js:not(.rm) .road .node.seen:nth-child(n) .rcard{transform:none}
+}
+
 </style>
 </head>
 <body>
@@ -1026,18 +1109,84 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.01ms !important
 <main class="stage" id="stage">
 <div class="track" id="track">
 
+<!-- ================= HOME (ARENA) ================= -->
+<section class="screen" id="home" aria-labelledby="heroTitle">
+  <div class="hero-deco" aria-hidden="true">
+    <div class="hero-field"></div>
+    <div class="river"></div>
+    <div class="bridge l"></div><div class="bridge r"></div>
+    <svg class="hero-tower t3" viewBox="0 0 80 112"><use href="#i-tower"/></svg>
+    <svg class="hero-tower t4" viewBox="0 0 80 112"><use href="#i-tower"/></svg>
+    <svg class="hero-tower t1" viewBox="0 0 80 112"><use href="#i-tower"/></svg>
+    <svg class="hero-tower t2" viewBox="0 0 80 112"><use href="#i-tower"/></svg>
+    <div class="sparks" id="sparks"></div>
+  </div>
+  <div class="scr home">
+    <div class="home-copy">
+      <span class="ribbon" style="--d:0s">Welcome to the Arena</span>
+      <h1 id="heroTitle" style="--d:0s">Hi, I'm <span class="gold">Asher.</span></h1>
+      <p class="hero-sub" style="--d:.08s">CS (CAS) + Finance (Stern) at NYU. Product Management Intern at Supercell, incoming Product Management Intern at Nintendo, 30K+ gaming creator, and former captain of the South Korean National Fencing Team.</p>
+      <p class="sub-short">CS + Finance at NYU. PM Intern at Supercell, 30K+ creator, ex-national fencing captain.</p>
+      <div class="chips" style="--d:.14s">
+        <span class="chip focus"><b>Recruiting for:</b> Quant Finance · Product Management</span>
+        <span class="chip next"><b>Next up:</b> Nintendo, Kyoto · Dec 2026</span>
+        <span class="chip"><b>Speaks:</b> KO · EN · JA</span>
+      </div>
+      <div class="hero-cta" style="--d:.2s">
+        <button class="btn btn-gold btn-battle" type="button" data-battle><svg aria-hidden="true"><use href="#i-swords"/></svg><span class="lb">Battle<small>Bug Bash · 60s</small></span></button>
+        <a class="btn btn-outline" href="resume.pdf" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-doc"/></svg>Résumé</a>
+      </div>
+    </div>
+    <div class="home-card">
+      <div class="pcard-wrap2 tilt" id="pcardWrap">
+        <div class="bubble" id="bubble" aria-live="polite"></div>
+        <button class="pcard" id="pcard" type="button" aria-pressed="false" aria-label="Asher's player card. Press to turn it over for season stats.">
+          <span class="pc-face pc-front">
+            <span class="pc-in">
+              <span class="pcard-top" aria-hidden="true"><span class="tag">Champion</span><span class="tag-sub">Player card</span></span>
+              <span class="pcard-photo">
+                <picture>
+                  <source srcset="headshot.webp" type="image/webp">
+                  <img src="headshot.jpeg" alt="Asher Lee" width="640" height="640" fetchpriority="high" decoding="async"
+                       onerror="var s=this.parentNode.querySelector('source');if(s){s.remove();this.src='headshot.jpeg'}else{this.parentNode.remove()}">
+                </picture>
+                <span class="mono" aria-hidden="true">A</span>
+              </span>
+              <span class="pcard-name"><b>Asher Lee</b><small>CS (CAS) + Finance (Stern)</small></span>
+              <span class="pc-role">Product · Quant · Gaming</span>
+            </span>
+          </span>
+          <span class="pc-face pc-back">
+            <span class="pc-in">
+              <span class="pcard-top"><span class="tag">Season stats</span><span class="tag-sub">2026</span></span>
+              <span class="pstats">
+                <span class="pstat"><small>NYU GPA</small><b>4.0 / 4.0</b></span>
+                <span class="pstat"><small>YouTube</small><b>30K+ subs</b></span>
+                <span class="pstat"><small>Clash Royale</small><b>#1 Global</b></span>
+                <span class="pstat"><small>Languages</small><b>KO · EN · JA</b></span>
+                <span class="pstat"><small>Now at</small><b>Supercell</b></span>
+                <span class="pstat"><small>Next up</small><b>Nintendo</b></span>
+                <span class="pstat wide"><small>Fencing</small><b>National Team Captain</b></span>
+              </span>
+              <span class="pc-foot">Tap to turn back</span>
+            </span>
+          </span>
+        </button>
+        <button class="emote-btn" id="emoteBtn" type="button" aria-label="Send an emote"><svg aria-hidden="true"><use href="#i-chat"/></svg></button>
+      </div>
+      <p class="tap-hint"><svg aria-hidden="true"><use href="#i-chat"/></svg>Tap the card to turn it over</p>
+    </div>
+  </div>
+</section>
+
 <!-- ================= ABOUT ================= -->
 <section class="screen" id="profile" aria-labelledby="aboutTitle">
   <div class="scr">
     <div class="scr-head">
       <div class="ttl"><span class="ribbon blue">King Tower</span><h2 id="aboutTitle">About me</h2></div>
-      <div class="subtabs" role="tablist" aria-label="About me">
-        <button type="button" role="tab" id="tPlayer" aria-selected="true" aria-controls="pPlayer">Player</button>
-        <button type="button" role="tab" id="tRoad" aria-selected="false" aria-controls="pRoad" tabindex="-1" data-onshow="road">Trophy Road</button>
-      </div>
     </div>
     <div class="scr-body">
-      <div class="pane scroll-y" id="pPlayer" role="tabpanel" aria-labelledby="tPlayer">
+      <div class="pane" id="pPlayer">
 <article class="about panel">
         <h3>The player</h3>
         <p class="lead">I'm a CS + Finance student at NYU focused on <strong>quant finance</strong> and <strong>product management</strong>. I work on Clash Royale at Supercell, I'm joining Nintendo in Kyoto this winter, and I run a 30K+ gaming channel.</p>
@@ -1054,8 +1203,10 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.01ms !important
         <div style="--i:5" class="now panel"><span class="dot" aria-hidden="true"></span><div><small>Currently</small>Product Management Intern at Supercell · PM&amp;T Workshop at Beta Alpha Psi<span class="now-next"><b>Next up:</b> Product Management Intern at Nintendo, Kyoto · Dec 2026 – Jan 2027</span></div></div>
       </div>
       </div>
-      <div class="pane road-h" id="pRoad" role="tabpanel" aria-labelledby="tRoad" hidden>
-        <div class="hscroll" id="roadScroll" tabindex="0" role="region" aria-label="Trophy Road, oldest milestone first">
+      <h3 class="pane-title road-title" style="--i:5"><span class="ribbon">Trophy Road</span>How I got here</h3>
+      <div class="pane" id="pRoad">
+        <div class="road" id="roadEl">
+          <div class="road-track" aria-hidden="true"></div><div class="road-fill" id="roadFill" aria-hidden="true"></div>
           <ol class="road-list">
 <li class="node"><span class="tbadge" aria-hidden="true"><svg><use href="#i-trophy"/></svg></span><div class="rcard panel"><span class="yr">2019</span><h3>Silver medal</h3><p>2nd place at the Hong Kong International Regional Circuit in fencing.</p></div></li>
         <li class="node"><span class="tbadge" aria-hidden="true"><svg><use href="#i-trophy"/></svg></span><div class="rcard panel"><span class="yr">2019 – 2021</span><h3>National Team Captain</h3><p>Captained the South Korean National Fencing Team.</p></div></li>
@@ -1070,7 +1221,6 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.01ms !important
         <li class="node locked"><span class="tbadge" aria-hidden="true"><svg><use href="#i-lock"/></svg></span><div class="rcard panel"><span class="yr">2028</span><h3>Next Arena</h3><p>Graduation (Expected). The next arena is still locked.</p></div></li>
           </ol>
         </div>
-        <p class="road-hint">Drag, swipe, or scroll sideways along the road.</p>
       </div>
     </div>
   </div>
@@ -1089,7 +1239,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.01ms !important
         <button class="tab" type="button" aria-pressed="false" data-f="edu">Education</button>
       </div>
     </div>
-    <div class="scr-body scroll-y">
+    <div class="scr-body">
 <div class="deck" id="deckEl">
       <article style="--i:0" class="ccard r-legendary tilt" data-cat="work" data-cat-name="Work" data-rarity="Legendary" data-type="Product management" data-icon="pad" data-org="Nintendo · Kyoto, Japan">
         <span class="elixir drop" aria-hidden="true"><span>'26</span></span>
@@ -1204,88 +1354,14 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.01ms !important
   </div>
 </section>
 
-<!-- ================= HOME (ARENA) ================= -->
-<section class="screen" id="home" aria-labelledby="heroTitle">
-  <div class="hero-deco" aria-hidden="true">
-    <div class="hero-field"></div>
-    <div class="river"></div>
-    <div class="bridge l"></div><div class="bridge r"></div>
-    <svg class="hero-tower t3" viewBox="0 0 80 112"><use href="#i-tower"/></svg>
-    <svg class="hero-tower t4" viewBox="0 0 80 112"><use href="#i-tower"/></svg>
-    <svg class="hero-tower t1" viewBox="0 0 80 112"><use href="#i-tower"/></svg>
-    <svg class="hero-tower t2" viewBox="0 0 80 112"><use href="#i-tower"/></svg>
-    <div class="sparks" id="sparks"></div>
-  </div>
-  <div class="scr home">
-    <div class="home-copy">
-      <span class="ribbon" style="--d:0s">Welcome to the Arena</span>
-      <h1 id="heroTitle" style="--d:0s">Hi, I'm <span class="gold">Asher.</span></h1>
-      <p class="hero-sub" style="--d:.08s">CS (CAS) + Finance (Stern) at NYU. Product Management Intern at Supercell, incoming Product Management Intern at Nintendo, 30K+ gaming creator, and former captain of the South Korean National Fencing Team.</p>
-      <p class="sub-short">CS + Finance at NYU. PM Intern at Supercell, 30K+ creator, ex-national fencing captain.</p>
-      <div class="chips" style="--d:.14s">
-        <span class="chip focus"><b>Recruiting for:</b> Quant Finance · Product Management</span>
-        <span class="chip next"><b>Next up:</b> Nintendo, Kyoto · Dec 2026</span>
-        <span class="chip"><b>Speaks:</b> KO · EN · JA</span>
-      </div>
-      <div class="hero-cta" style="--d:.2s">
-        <button class="btn btn-gold btn-battle" type="button" data-battle><svg aria-hidden="true"><use href="#i-swords"/></svg><span class="lb">Battle<small>Bug Bash · 60s</small></span></button>
-        <a class="btn btn-outline" href="resume.pdf" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-doc"/></svg>Résumé</a>
-      </div>
-    </div>
-    <div class="home-card">
-      <div class="pcard-wrap2 tilt" id="pcardWrap">
-        <div class="bubble" id="bubble" aria-live="polite"></div>
-        <button class="pcard" id="pcard" type="button" aria-pressed="false" aria-label="Asher's player card. Press to turn it over for season stats.">
-          <span class="pc-face pc-front">
-            <span class="pc-in">
-              <span class="pcard-top" aria-hidden="true"><span class="tag">Champion</span><span class="tag-sub">Player card</span></span>
-              <span class="pcard-photo">
-                <picture>
-                  <source srcset="headshot.webp" type="image/webp">
-                  <img src="headshot.jpeg" alt="Asher Lee" width="640" height="640" fetchpriority="high" decoding="async"
-                       onerror="var s=this.parentNode.querySelector('source');if(s){s.remove();this.src='headshot.jpeg'}else{this.parentNode.remove()}">
-                </picture>
-                <span class="mono" aria-hidden="true">A</span>
-              </span>
-              <span class="pcard-name"><b>Asher Lee</b><small>CS (CAS) + Finance (Stern)</small></span>
-              <span class="pc-role">Product · Quant · Gaming</span>
-            </span>
-          </span>
-          <span class="pc-face pc-back">
-            <span class="pc-in">
-              <span class="pcard-top"><span class="tag">Season stats</span><span class="tag-sub">2026</span></span>
-              <span class="pstats">
-                <span class="pstat"><small>NYU GPA</small><b>4.0 / 4.0</b></span>
-                <span class="pstat"><small>YouTube</small><b>30K+ subs</b></span>
-                <span class="pstat"><small>Clash Royale</small><b>#1 Global</b></span>
-                <span class="pstat"><small>Languages</small><b>KO · EN · JA</b></span>
-                <span class="pstat"><small>Now at</small><b>Supercell</b></span>
-                <span class="pstat"><small>Next up</small><b>Nintendo</b></span>
-                <span class="pstat wide"><small>Fencing</small><b>National Team Captain</b></span>
-              </span>
-              <span class="pc-foot">Tap to turn back</span>
-            </span>
-          </span>
-        </button>
-        <button class="emote-btn" id="emoteBtn" type="button" aria-label="Send an emote"><svg aria-hidden="true"><use href="#i-chat"/></svg></button>
-      </div>
-      <p class="tap-hint"><svg aria-hidden="true"><use href="#i-chat"/></svg>Tap the card to turn it over</p>
-    </div>
-  </div>
-</section>
-
 <!-- ================= PROJECTS ================= -->
 <section class="screen" id="chests" aria-labelledby="chestTitle">
   <div class="scr">
     <div class="scr-head">
       <div class="ttl"><span class="ribbon">Chest Slots</span><h2 id="chestTitle">Projects</h2></div>
-      <div class="subtabs" role="tablist" aria-label="Projects and skills">
-        <button type="button" role="tab" id="tChests" aria-selected="true" aria-controls="pChests">Chests</button>
-        <button type="button" role="tab" id="tSkills" aria-selected="false" aria-controls="pSkills" tabindex="-1">Arsenal</button>
-      </div>
     </div>
     <div class="scr-body">
-      <div class="pane scroll-y" id="pChests" role="tabpanel" aria-labelledby="tChests">
+      <div class="pane" id="pChests">
 <div class="chests" id="chestEl">
       <article style="--i:0" class="slot panel" data-tier="legendary" data-tier-name="Legendary Chest" data-when="Dec 2025 – Present">
         <div class="chest t-legendary" aria-hidden="true"><span class="rays"></span><span class="base"></span><span class="lid"></span><span class="lock"></span></div>
@@ -1354,7 +1430,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.01ms !important
       </article>
     </div>
       </div>
-      <div class="pane scroll-y" id="pSkills" role="tabpanel" aria-labelledby="tSkills" hidden>
+      <h3 class="pane-title" style="--i:5"><span class="ribbon blue">Arsenal</span>Skills</h3>
+      <div class="pane" id="pSkills">
 <div class="arsenal">
       <div class="skill panel"><header><span class="ic" aria-hidden="true"><svg><use href="#ic-chart"/></svg></span><h3>Finance &amp; Markets</h3></header><ul class="tags"><li>Financial Accounting</li><li>Valuation</li><li>LP/GP Mechanics</li><li>S&amp;T / IBD Structure</li><li>Excel Modeling</li></ul></div>
       <div class="skill panel"><header><span class="ic" aria-hidden="true"><svg><use href="#ic-code"/></svg></span><h3>Programming</h3></header><ul class="tags"><li>Python</li><li>pandas</li><li>statsmodels</li><li>scikit-learn</li><li>JavaScript</li><li>HTML / CSS</li><li>Flask</li><li>SQL</li><li>Git</li><li>C++</li></ul></div>
@@ -1370,7 +1447,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.01ms !important
 
 <!-- ================= CONTACT ================= -->
 <section class="screen" id="contact" aria-labelledby="contactTitle">
-  <div class="scr scroll-y">
+  <div class="scr">
     <div class="scr-head">
       <div class="ttl"><span class="ribbon blue">Join my Clan</span><h2 id="contactTitle">Contact</h2></div>
     </div>
@@ -2143,113 +2220,82 @@ if (fine){
 }
 
 /* =====================================================================
-   SCREENS: one page, no scrolling. Five screens sit side by side like the
-   tabs of a mobile game; the tab bar, arrow keys, number keys and a
-   horizontal swipe all move between them.
+   SECTIONS: a normal scrolling page. The game-style tab bar at the bottom
+   jumps to each section, and the active tab follows your scroll.
    ===================================================================== */
-const track = $('#track'), stageEl = $('#stage');
+const track = $('#track');
 const screens = $$('.screen', track);
 const tabs = $$('#tabbar .tb');
 const ids = screens.map(s => s.id);
 const HASH = {about:'profile', experience:'deck', home:'home', projects:'chests', contact:'contact'};
 const HASH_OF = Object.fromEntries(Object.entries(HASH).map(([k, v]) => [v, k]));
-let cur = Math.max(0, ids.indexOf('home'));
-const seen = new Set();
-function setX(px, animate){
-  track.style.transition = animate && !reduce ? '' : 'none';
-  track.style.transform = `translate3d(${px}px,0,0)`;
-}
-function place(animate){ setX(-cur * stageEl.clientWidth, animate); }
+const TAB_OF = tabs.map(t => t.getAttribute('href').slice(1));
+let cur = ids.indexOf('home');
 function focusScreen(){
   const h = $('h2, h1', screens[cur]);
   if (h){ h.setAttribute('tabindex', '-1'); h.focus({preventScroll:true}); }
 }
+function markTab(id){
+  tabs.forEach((t, k) => { const on = TAB_OF[k] === id; t.classList.toggle('on', on); if (on) t.setAttribute('aria-current', 'true'); else t.removeAttribute('aria-current'); });
+}
 function go(i, opts){
   opts = opts || {};
   i = Math.max(0, Math.min(screens.length - 1, i));
-  const changed = i !== cur;
-  const dir = i > cur ? 1 : -1;
   cur = i;
-  screens.forEach((s, k) => { const on = k === i; s.inert = !on; s.setAttribute('aria-hidden', !on); s.classList.toggle('on', on); });
-  tabs.forEach((t, k) => { const on = k === i; t.classList.toggle('on', on); if (on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current'); });
-  place(!opts.instant);
-  if (changed && !opts.silent) Snd.play('swipe', dir);
-  if (!seen.has(ids[i])){ seen.add(ids[i]); screens[i].classList.add('first'); }
-  if (!opts.noHash) history.replaceState(null, '', '#' + HASH_OF[ids[i]]);
-  if (opts.focus) focusScreen();
+  const el = screens[i];
+  if (ids[i] === 'home') scrollTo({top:0, behavior:opts.instant || reduce ? 'auto' : 'smooth'});
+  else el.scrollIntoView({behavior:opts.instant || reduce ? 'auto' : 'smooth', block:'start'});
+  markTab(ids[i]);
+  if (!opts.silent) Snd.play('swipe', 1);
+  if (opts.focus) setTimeout(focusScreen, reduce ? 0 : 450);
 }
-tabs.forEach((t, k) => t.addEventListener('click', e => { e.preventDefault(); go(k, {focus:true}); }));
+tabs.forEach((t, k) => t.addEventListener('click', e => { e.preventDefault(); go(ids.indexOf(TAB_OF[k]), {focus:true}); }));
 $$('[data-go]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(ids.indexOf(a.dataset.go), {focus:true}); }));
-addEventListener('resize', () => place(false));
-// keyboard: left/right arrows or 1-5 switch screens (never while typing, in a dialog or in a game)
-addEventListener('keydown', e => {
-  if (root.classList.contains('show-gate') || !modal.hidden || !setDlg.hidden || !battle.hidden) return;
-  if (/input|textarea|select/i.test(document.activeElement.tagName) || e.metaKey || e.ctrlKey || e.altKey) return;
-  if (document.activeElement.closest && document.activeElement.closest('.hscroll, [role=tablist]')) return;
-  if (e.key === 'ArrowRight'){ e.preventDefault(); go(cur + 1); }
-  else if (e.key === 'ArrowLeft'){ e.preventDefault(); go(cur - 1); }
-  else if (/^[1-5]$/.test(e.key)){ go(+e.key - 1); }
-  else if (e.key === 'q' || e.key === 'Q' || e.key === 'e' || e.key === 'E'){
-    const st = $('.subtabs', screens[cur]); if (!st) return;
-    const bs = $$('[role=tab]', st), k = bs.findIndex(b => b.getAttribute('aria-selected') === 'true');
-    const n = (k + (/e/i.test(e.key) ? 1 : -1) + bs.length) % bs.length; bs[n].click(); bs[n].focus();
-  }
-});
-// swipe: follows the finger 1:1, resists past the ends, a quick flick is enough
-let drag = null;
-stageEl.addEventListener('pointerdown', e => {
-  if (e.pointerType === 'mouse' || drag || e.target.closest('.hscroll, input, .no-swipe')) return;
-  drag = {x:e.clientX, y:e.clientY, t:performance.now(), id:e.pointerId, axis:null, dx:0};
-});
-stageEl.addEventListener('pointermove', e => {
-  if (!drag || e.pointerId !== drag.id) return;
-  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-  if (!drag.axis){ if (Math.hypot(dx, dy) < 8) return; drag.axis = Math.abs(dx) > Math.abs(dy) * 1.2 ? 'x' : 'y'; if (drag.axis === 'x') stageEl.setPointerCapture(e.pointerId); }
-  if (drag.axis !== 'x') return;
-  const atEdge = (cur === 0 && dx > 0) || (cur === screens.length - 1 && dx < 0);
-  drag.dx = atEdge ? dx * .3 / (1 + Math.abs(dx) / 300) : dx;
-  setX(-cur * stageEl.clientWidth + drag.dx, false);
-});
-const endDrag = e => {
-  if (!drag || e.pointerId !== drag.id) return;
-  const d = drag; drag = null;
-  if (d.axis !== 'x') return;
-  const v = Math.abs(d.dx) / (performance.now() - d.t), w = stageEl.clientWidth;
-  if ((Math.abs(d.dx) > w * .22 || v > .11) && Math.abs(d.dx) > 24) go(cur + (d.dx < 0 ? 1 : -1));
-  else place(true);
-};
-stageEl.addEventListener('pointerup', endDrag);
-stageEl.addEventListener('pointercancel', endDrag);
 
-/* ----- sub-tabs inside a screen (Player / Trophy Road, Chests / Arsenal) ----- */
-$$('.subtabs').forEach(st => {
-  const bs = $$('[role=tab]', st);
-  bs.forEach(b => b.addEventListener('click', () => {
-    if (b.getAttribute('aria-selected') === 'true') return;
-    bs.forEach(x => { const on = x === b; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; const p = document.getElementById(x.getAttribute('aria-controls')); p.hidden = !on; if (on && !reduce) p.animate([{opacity:0, transform:'translateY(8px)'}, {opacity:1, transform:'none'}], {duration:220, easing:EASE_OUT}); });
-    Snd.play('tick');
-    if (b.dataset.onshow === 'road') scrollRoad();
-  }));
-  st.addEventListener('keydown', e => {
-    const k = bs.indexOf(document.activeElement); if (k < 0) return;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ e.preventDefault(); const n = (k + (e.key === 'ArrowRight' ? 1 : -1) + bs.length) % bs.length; bs[n].click(); bs[n].focus(); }
+// keep the sticky bar heights in CSS so the arena fills exactly one screen
+function measure(){
+  root.style.setProperty('--hud-h', $('.hud').offsetHeight + 'px');
+  root.style.setProperty('--tab-h', $('#tabbar').offsetHeight + 'px');
+}
+measure(); addEventListener('resize', measure);
+
+// the active tab follows the section in the middle of the screen
+let spyT = false;
+function spy(){
+  spyT = false;
+  let id = ids[0];
+  screens.forEach(s => { if (s.getBoundingClientRect().top < innerHeight * .45) id = s.id; });
+  if (ids.indexOf(id) !== cur || !tabs.some(t => t.classList.contains('on'))){ cur = ids.indexOf(id); markTab(id); }
+}
+addEventListener('scroll', () => { if (!spyT){ spyT = true; requestAnimationFrame(spy); } }, {passive:true});
+
+// each section makes its entrance the first time it scrolls into view
+if ('IntersectionObserver' in window && !reduce){
+  const io = new IntersectionObserver(es => es.forEach(en => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add('first'); io.unobserve(en.target);
+  }), {threshold:.12});
+  screens.forEach(s => { if (s.id !== 'home') io.observe(s); });
+} else screens.forEach(s => s.classList.add('first'));
+
+/* ----- trophy road: the gold line fills as you scroll; badges pop as the line reaches them ----- */
+const roadEl = $('#roadEl'), roadFill = $('#roadFill'), nodes = $$('.node', roadEl);
+function fillRoad(){
+  const r = roadEl.getBoundingClientRect();
+  const fillPx = Math.max(0, Math.min(r.height, innerHeight * .62 - r.top));
+  roadFill.style.transform = `scaleY(${(fillPx / Math.max(1, r.height)).toFixed(4)})`;
+  nodes.forEach(nd => {
+    const nr = nd.getBoundingClientRect();
+    const on = (nr.top - r.top + nr.height / 2) <= fillPx;
+    if (on && !nd.classList.contains('reached') && !reduce) $('.tbadge', nd).animate([{scale:'1'}, {scale:'1.28'}, {scale:'1'}], {duration:380, easing:EASE_OUT});
+    nd.classList.toggle('reached', on);
+    if (nr.top < innerHeight * .9) nd.classList.add('seen');
   });
-});
-
-/* ----- trophy road: a horizontal road you drag or wheel along; opens at the latest milestone ----- */
-const road = $('#roadScroll');
-function scrollRoad(){
-  if (!road || road.offsetParent === null) return;
-  const next = $('.node.next', road) || $$('.node', road).pop();
-  road.scrollLeft = Math.max(0, next.offsetLeft - road.clientWidth * .55);
 }
-if (road){
-  road.addEventListener('wheel', e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)){ road.scrollLeft += e.deltaY; e.preventDefault(); } }, {passive:false});
-  let rd = null;
-  road.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; rd = {x:e.clientX, s:road.scrollLeft, moved:false}; });
-  addEventListener('pointermove', e => { if (!rd) return; const dx = e.clientX - rd.x; if (Math.abs(dx) > 4) rd.moved = true; road.scrollLeft = rd.s - dx; });
-  addEventListener('pointerup', () => { rd = null; });
-}
+let roadT = false;
+addEventListener('scroll', () => { if (!roadT){ roadT = true; requestAnimationFrame(() => { roadT = false; fillRoad(); }); } }, {passive:true});
+addEventListener('resize', fillRoad);
+fillRoad();
 
 /* =====================================================================
    BUG BASH: bugs crawl out of production code. Squash them in a 60-second sprint.
@@ -2921,7 +2967,7 @@ gameApi = {
 new ResizeObserver(es => { $('#pcardWrap').style.setProperty('--cw', es[0].contentRect.width + 'px'); }).observe($('#pcardWrap'));
 const initHash = decodeURIComponent(location.hash.slice(1));
 const startId = HASH[initHash] || (ids.includes(initHash) ? initHash : 'home');
-go(ids.indexOf(startId), {instant:true, silent:true, noHash:!initHash || initHash === 'battle'});
+if (initHash && startId !== 'home') requestAnimationFrame(() => go(ids.indexOf(startId), {instant:true, silent:true})); else markTab('home');
 if (root.classList.contains('show-gate')) startGate(false); else app.classList.add('enter');
 if (initHash === 'battle') openBattle();
 addEventListener('hashchange', () => {
